@@ -1,17 +1,32 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, ScrollView } from 'react-native';
 
 export default function App() {
-  const [outputText, setOutputText] = useState('Some Text Here')
+  const [enteredItem, setenteredItem] = useState('');
+  const [allItems, setAllItems] = useState([]);
+
+  const itemInputHandler = (enteredText) => {
+    setenteredItem(enteredText);
+  };
+
+  const addItemHandler = () => {
+    setAllItems(currentItem => [...currentItem, enteredItem]);
+  };
+
   return (
     <View style={styles.screen}>
       <View style={styles.inputContainer}>
-        <TextInput placeholder="Add Item" style={styles.inputText } />
-        <Button title="ADD" />
+        <TextInput
+          placeholder="Add Item"
+          style={styles.input}
+          onChangeText={itemInputHandler}
+          value={enteredItem}
+        />
+        <Button title="ADD" onPress={addItemHandler} />
       </View>
-      <View>
-
-      </View>
+      <ScrollView>
+        {allItems.map((item) => <View key={item} style={styles.listItem}><Text>{item}</Text></View>)}
+      </ScrollView>
     </View>
   );
 }
@@ -25,10 +40,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center'
   },
-  inputText: {
-    borderBottomColor: 'black', 
-    borderWidth: 1, 
-    padding: 10, 
-    width: '200'
+  input: {
+    width: '80%',
+    borderColor: 'black',
+    borderWidth: 1,
+    padding: 10
+  },
+  listItem: {
+    padding: 10,
+    marginVertical: 10,
+    backgroundColor: '#ccc',
+    borderColor: 'black',
+    borderWidth: 1
   }
 });
