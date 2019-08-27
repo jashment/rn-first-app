@@ -10,7 +10,12 @@ export default function App() {
   };
 
   const addItemHandler = () => {
-    setAllItems(currentItem => [...currentItem, enteredItem]);
+    setAllItems(currentItem => [
+      ...currentItem, 
+      { key: Math.random().toString(), 
+        value: enteredItem
+      }
+    ]);
   };
 
   return (
@@ -24,9 +29,9 @@ export default function App() {
         />
         <Button title="ADD" onPress={addItemHandler} />
       </View>
-      <FlatList data={allItems} renderItem={itemData => (
+      <FlatList keyExtractor={(item, index) => item.key} data={allItems} renderItem={itemData => (
       <View style={styles.listItem}>
-        <Text>{itemData.item}</Text>
+        <Text>{itemData.item.value}</Text>
       </View>)} />
       
     </View>
