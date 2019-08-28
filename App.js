@@ -1,38 +1,39 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
+import Item from './components/Item';
+import Input from './components/Input';
+import { getWorldAlignment } from 'expo/build/AR';
 
 export default function App() {
-  const [enteredItem, setenteredItem] = useState('');
   const [allItems, setAllItems] = useState([]);
 
-  const itemInputHandler = (enteredText) => {
-    setenteredItem(enteredText);
-  };
-
-  const addItemHandler = () => {
+  const addItemHandler = itemTitle => {
     setAllItems(currentItem => [
       ...currentItem, 
       { key: Math.random().toString(), 
-        value: enteredItem
+        value: itemTitle
       }
     ]);
   };
 
+  const removeItemHandler = itemKey => {
+    setAllItems(currentItems => {
+      return currentItems.filter((item) => item.key !== itemKey);
+    })
+  }
+
   return (
     <View style={styles.screen}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Add Item"
-          style={styles.input}
-          onChangeText={itemInputHandler}
-          value={enteredItem}
-        />
-        <Button title="ADD" onPress={addItemHandler} />
-      </View>
-      <FlatList keyExtractor={(item, index) => item.key} data={allItems} renderItem={itemData => (
-      <View style={styles.listItem}>
-        <Text>{itemData.item.value}</Text>
-      </View>)} />
+      <Input onAddItem={addItemHandler} />
+      <FlatList 
+        keyExtractor={
+          (item, index) => item.key
+        } 
+        data={allItems} 
+        renderItem={
+          itemData => 
+          <Item title={itemData.item.value} id={itemData.item.key} onDelete={removeItemHandler} />
+        } />
       
     </View>
   );
@@ -41,23 +42,5 @@ export default function App() {
 const styles = StyleSheet.create({
   screen: {
     padding: 50
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  input: {
-    width: '80%',
-    borderColor: 'black',
-    borderWidth: 1,
-    padding: 10
-  },
-  listItem: {
-    padding: 10,
-    marginVertical: 10,
-    backgroundColor: '#ccc',
-    borderColor: 'black',
-    borderWidth: 1
   }
 });
