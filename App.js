@@ -6,6 +6,7 @@ import { getWorldAlignment } from 'expo/build/AR';
 
 export default function App() {
   const [allItems, setAllItems] = useState([]);
+  const [addMode, setAddMode] = useState(false);
 
   const addItemHandler = itemTitle => {
     setAllItems(currentItem => [
@@ -14,6 +15,7 @@ export default function App() {
         value: itemTitle
       }
     ]);
+    setAddMode(false)
   };
 
   const removeItemHandler = itemKey => {
@@ -22,9 +24,14 @@ export default function App() {
     })
   }
 
+  const cancelAddItemHandler = () => {
+    setAddMode(false);
+  }
+
   return (
     <View style={styles.screen}>
-      <Input onAddItem={addItemHandler} />
+      <Button title="Add New Item" onPress={() => setAddMode(true)} />
+      <Input visible={addMode} onAddItem={addItemHandler} onCancel={cancelAddItemHandler} />
       <FlatList 
         keyExtractor={
           (item, index) => item.key
